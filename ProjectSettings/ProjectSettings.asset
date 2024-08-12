@@ -12,7 +12,7 @@ PlayerSettings:
   targetDevice: 2
   useOnDemandResources: 0
   accelerometerFrequency: 60
-  companyName: DefaultCompany
+  companyName: ONYX Development
   productName: Madcap Delivery
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
@@ -682,7 +682,7 @@ PlayerSettings:
     m_VersionCode: 1
     m_VersionName: 
   apiCompatibilityLevel: 6
-  activeInputHandler: 0
+  activeInputHandler: 2
   windowsGamepadBackendHint: 0
   cloudProjectId: 85103e27-6914-4e0b-89ea-31091941e767
   framebufferDepthMemorylessMode: 0
