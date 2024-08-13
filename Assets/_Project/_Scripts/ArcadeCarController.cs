@@ -6,40 +6,52 @@ public class ArcadeCarController : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private Rigidbody rb;
+    [SerializeField] private Transform root;
 
     [Header("Settings")]
     [SerializeField] private float acceleration = 1000;
     [SerializeField] private float breakingPower = 5;
     [SerializeField] private float steerSpeed = 50;
 
+    [Space]
+
     [SerializeField] private float maxSpeed = 20;
     [SerializeField] private float downhillMaxSpeed = 100;
     [SerializeField] private float speedClampSmoothing = 10;
+
+    [Space]
 
     [SerializeField] private float groundCheckRayDistance = 1;
     [SerializeField] private float groundAlignSmoothing = 10;
     [SerializeField] private LayerMask sphereLayer;
 
+    [Space]
+
+    [SerializeField] private float rootRotationSmoothing = 10;
+    [SerializeField] private float driftAngle = 45;
+
     [Header("Debug")]
-    [SerializeField, VerticalGroup(nameof(field01), nameof(field02), nameof(field03), nameof(field04))]
-    private Void groupHolder;
-    
+
     [SerializeField] private bool reverse;
 
     [SerializeField] private bool isGrounded;
     [SerializeField] private RaycastHit groundCheckHit;
 
     [SerializeField] private float steerAngle;
+    [SerializeField] private bool steeringRight;
 
     [SerializeField] private bool downhill;
 
     [SerializeField] private bool requestGearChange;
     [SerializeField] private bool lastGearInput;
 
+    [SerializeField] private float rootYRotation;
+
     [Header("Inputs")]
     [SerializeField] private bool throttleInput;
     [SerializeField] private bool gearInput;
     [SerializeField] private bool breakInput;
+    [SerializeField] private bool driftInput;
     [SerializeField] private float steerInput;
 
     private void Start()
@@ -62,6 +74,8 @@ public class ArcadeCarController : MonoBehaviour
         HandleBreak();
 
         ClampSpeed();
+
+        UpdateGraphics();
 
         transform.position = rb.transform.position;
     }
@@ -102,12 +116,24 @@ public class ArcadeCarController : MonoBehaviour
 
     private void HandleSteer()
     {
-        steerAngle += steerInput * steerSpeed * (reverse ? -1 : 1) * Time.deltaTime;
+        steerAngle += steerInput * steerSpeed * (reverse ? -1 : 1) * (throttleInput ? 1 : 0) * Time.deltaTime;
+
+        if (steerInput > 0 && !reverse)
+        {
+            steeringRight = true;
+        }
+        else if (steerInput < 0 && !reverse)
+        {
+            steeringRight = false;
+        }
 
         Vector3 currentRotation = transform.rotation.eulerAngles;
         currentRotation.y = steerAngle;
         transform.rotation = Quaternion.Euler(currentRotation);
     }
+
+    // TODO:
+    // - Remove "steeringRight" variable.
 
     private void HandleThrottle()
     {
@@ -139,8 +165,22 @@ public class ArcadeCarController : MonoBehaviour
         }
     }
 
+    private void UpdateGraphics()
+    {
+        rootYRotation = (driftInput ? driftAngle : 0) * steerInput;
+        Debug.Log(rootYRotation);
+
+        float smoothedYRotation = Mathf.Lerp(root.localRotation.eulerAngles.y, rootYRotation, rootRotationSmoothing * Time.deltaTime);
+        Debug.Log(root.localRotation.eulerAngles.y);
+        Debug.Log(smoothedYRotation);
+        root.localRotation = Quaternion.Euler(0, smoothedYRotation, 0);
+    }
+
+    #region Inputs
     public void ThrottleInput(InputAction.CallbackContext ctx) { throttleInput = ctx.performed; }
     public void GearInput(InputAction.CallbackContext ctx) { gearInput = ctx.performed; }
     public void BreakInput(InputAction.CallbackContext ctx) { breakInput = ctx.performed; }
+    public void DriftInput(InputAction.CallbackContext ctx) { driftInput = ctx.performed; }
     public void SteerInput(InputAction.CallbackContext ctx) { steerInput = ctx.ReadValue<float>(); }
+    #endregion
 }
