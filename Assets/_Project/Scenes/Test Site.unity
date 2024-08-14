@@ -267,6 +267,7 @@ MonoBehaviour:
   rotationSmoothing: 0
   lookSmoothing: 0
   offset: {x: 0, y: 0, z: 0}
+  lookOffset: {x: 0, y: 0, z: 0}
 --- !u!1 &586194050
 GameObject:
   m_ObjectHideFlags: 0
@@ -627,6 +628,7 @@ MonoBehaviour:
     m_Bits: 128
   rootRotationSmoothing: 10
   driftAngle: 15
+  timeTillDisableDriftCam: 0.15
   cameraController: {fileID: 0}
   reverse: 0
   isGrounded: 0
@@ -636,6 +638,8 @@ MonoBehaviour:
   lastGearInput: 0
   rootYRotation: 0
   actingSteerSpeed: 0
+  isDrifting: 0
+  timeOfNotDrifting: 0
   throttleInput: 0
   gearInput: 0
   breakInput: 0

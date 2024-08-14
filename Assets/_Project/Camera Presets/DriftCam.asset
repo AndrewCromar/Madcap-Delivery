@@ -16,3 +16,4 @@ MonoBehaviour:
   rotationSmoothing: 7
   lookSmoothing: 7
   offset: {x: 0, y: 5, z: -10}
+  lookOffset: {x: 0, y: 0, z: 5}
