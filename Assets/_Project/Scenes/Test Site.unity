@@ -225,6 +225,7 @@ GameObject:
   m_Component:
   - component: {fileID: 275346757}
   - component: {fileID: 275346758}
+  - component: {fileID: 275346759}
   m_Layer: 0
   m_Name: Camera Container
   m_TagString: Untagged
@@ -263,11 +264,75 @@ MonoBehaviour:
   target: {fileID: 879514449}
   cam: {fileID: 963194228}
   defaultCamSettings: {fileID: 11400000, guid: 4469357cfe625be4db6111d39ac02293, type: 2}
+  steerInput: 0
   moveSmoothing: 0
   rotationSmoothing: 0
   lookSmoothing: 0
+  cameraTilt: 0
   offset: {x: 0, y: 0, z: 0}
   lookOffset: {x: 0, y: 0, z: 0}
+--- !u!114 &275346759
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 275346756}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62899f850307741f2a39c98a8b639597, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Actions: {fileID: -944628639613478452, guid: c9cf87bc75f66a641b7699d1e97079cf, type: 3}
+  m_NotificationBehavior: 2
+  m_UIInputModule: {fileID: 0}
+  m_DeviceLostEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_DeviceRegainedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ControlsChangedEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  m_ActionEvents:
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 5f91ba42-3490-448c-bc44-6256f252765e
+    m_ActionName: Car/Throttle[/Keyboard/w]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 5af68c99-e3b6-40b7-bc23-50b81173c978
+    m_ActionName: Car/Gear[/Keyboard/e]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 3aa00b1a-fb87-466f-9f9a-d859f6789aa5
+    m_ActionName: Car/Break[/Keyboard/s]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 275346758}
+        m_TargetAssemblyTypeName: CameraController, Assembly-CSharp
+        m_MethodName: SteerInput
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 1eca6633-cbd1-42c6-b5d7-d80ac30810d9
+    m_ActionName: Car/Steer[/Keyboard/a,/Keyboard/d]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: bd566c83-0d05-4776-b2c5-69e15e0d825d
+    m_ActionName: Car/Drift[/Keyboard/space]
+  m_NeverAutoSwitchControlSchemes: 0
+  m_DefaultControlScheme: 
+  m_DefaultActionMap: Car
+  m_SplitScreenIndex: -1
+  m_Camera: {fileID: 0}
 --- !u!1 &586194050
 GameObject:
   m_ObjectHideFlags: 0
@@ -614,6 +679,7 @@ MonoBehaviour:
   - {fileID: 1047134975}
   camSettings: {fileID: 11400000, guid: 4469357cfe625be4db6111d39ac02293, type: 2}
   driftCamSettings: {fileID: 11400000, guid: 746d4e9db4819e145a61e18b9f063b6c, type: 2}
+  reverseCamSettings: {fileID: 11400000, guid: cfbc1f473e2b18142af06a04024394e9, type: 2}
   acceleration: 1000
   breakingPower: 5
   steerSpeed: 50

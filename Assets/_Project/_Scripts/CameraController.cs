@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class CameraController : MonoBehaviour
 {
@@ -9,13 +10,19 @@ public class CameraController : MonoBehaviour
     [SerializeField] private Transform cam;
     [SerializeField] private CameraPresetSO defaultCamSettings;
 
+    [Header ("Inputs")]
+    [SerializeField] private float steerInput;
+
     [Header("Debug")]
     [SerializeField] private float moveSmoothing;
     [SerializeField] private float rotationSmoothing;
     [SerializeField] private float lookSmoothing;
+    [SerializeField] private float cameraTilt;
 
     [SerializeField] private Vector3 offset;
     [SerializeField] private Vector3 lookOffset;
+
+    [SerializeField] private ArcadeCarController arcadeCarController;
 
     private void Awake()
     {
@@ -25,6 +32,7 @@ public class CameraController : MonoBehaviour
     private void Start()
     {
         LoadCamPreset(defaultCamSettings);
+        arcadeCarController = ArcadeCarController.Instance;
     }
 
     private void FixedUpdate()
@@ -38,7 +46,9 @@ public class CameraController : MonoBehaviour
         Vector3 relativeLookOffset = target.TransformDirection(-lookOffset);
         Quaternion targetRotation = Quaternion.LookRotation(target.position - (cam.position + relativeLookOffset));
 
-        cam.rotation = Quaternion.Lerp(cam.rotation, targetRotation, lookSmoothing * Time.deltaTime);
+        Vector3 cameraTiltAmount = new Vector3(0, 0, -cameraTilt * steerInput * Mathf.Clamp(arcadeCarController.rb.velocity.magnitude, 0, 1));
+
+        cam.rotation = Quaternion.Lerp(cam.rotation, targetRotation * Quaternion.Euler(cameraTiltAmount), lookSmoothing * Time.deltaTime);
     }
 
     public void LoadCamPreset(CameraPresetSO camPreset)
@@ -46,7 +56,10 @@ public class CameraController : MonoBehaviour
         this.moveSmoothing = camPreset.moveSmoothing;
         this.rotationSmoothing = camPreset.rotationSmoothing;
         this.lookSmoothing = camPreset.lookSmoothing;
+        this.cameraTilt = camPreset.cameraTilt;
         this.offset = camPreset.offset;
         this.lookOffset = camPreset.lookOffset;
     }
+
+    public void SteerInput(InputAction.CallbackContext ctx) { steerInput = ctx.ReadValue<float>(); }
 }

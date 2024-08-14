@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSmoothing: 7
   rotationSmoothing: 7
-  lookSmoothing: 7
+  lookSmoothing: 2.5
+  cameraTilt: 25
   offset: {x: 0, y: 5, z: -10}
   lookOffset: {x: 0, y: 0, z: 5}
