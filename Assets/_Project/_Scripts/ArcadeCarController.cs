@@ -3,12 +3,15 @@ using UnityEngine.InputSystem;
 
 public class ArcadeCarController : MonoBehaviour
 {
+    [HideInInspector] public static ArcadeCarController Instance;
+
     [Header("References")]
-    [SerializeField] private Rigidbody rb;
+    [SerializeField] public Rigidbody rb;
     [SerializeField] private Transform root;
     [SerializeField] private TrailRenderer[] driftTrails;
     [SerializeField] private CameraPresetSO camSettings;
     [SerializeField] private CameraPresetSO driftCamSettings;
+    [SerializeField] private CameraPresetSO reverseCamSettings;
 
     [Header("Settings")]
     [SerializeField] private float acceleration = 1000;
@@ -63,6 +66,11 @@ public class ArcadeCarController : MonoBehaviour
     [SerializeField] private bool driftInput;
     [SerializeField] private float steerInput;
 
+    private void Awake()
+    {
+        Instance = this;
+    }
+
     private void Start()
     {
         rb.transform.parent = null;
@@ -108,7 +116,7 @@ public class ArcadeCarController : MonoBehaviour
 
     private void HandleDrifting()
     {
-        isDrifting = driftInput && steerInput != 0;
+        isDrifting = driftInput && steerInput != 0 && !reverse;
 
         if (!isDrifting) timeOfNotDrifting += Time.deltaTime;
         else timeOfNotDrifting = 0;
@@ -192,7 +200,11 @@ public class ArcadeCarController : MonoBehaviour
 
     private void UpdateCameraSettings()
     {
-        if (isDrifting || timeOfNotDrifting <= timeTillDisableDriftCam)
+        if(reverse)
+        {
+            cameraController.LoadCamPreset(reverseCamSettings);
+        }
+        else if (isDrifting || timeOfNotDrifting <= timeTillDisableDriftCam)
         {
             cameraController.LoadCamPreset(driftCamSettings);
         }

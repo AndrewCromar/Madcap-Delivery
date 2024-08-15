@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: eec42d100e5e60840b0192fa9f6a284f, type: 3}
-  m_Name: CameraFollowCar
+  m_Name: ReverseCam
   m_EditorClassIdentifier: 
-  moveSmoothing: 5
-  rotationSmoothing: 5
-  lookSmoothing: 5
-  cameraTilt: 10
-  offset: {x: 0, y: 2.5, z: -7.5}
-  lookOffset: {x: 0, y: 0, z: 0}
+  moveSmoothing: 7
+  rotationSmoothing: 7
+  lookSmoothing: 7
+  cameraTilt: -10
+  offset: {x: 0, y: 2.5, z: 7.5}
+  lookOffset: {x: 0, y: 0, z: -5}
