@@ -8,10 +8,13 @@ public class ArcadeCarController : MonoBehaviour
     [Header("References")]
     [SerializeField] public Rigidbody rb;
     [SerializeField] private Transform root;
-    [SerializeField] private TrailRenderer[] driftTrails;
+    [SerializeField] private TrailRenderer leftDriftTrail;
+    [SerializeField] private TrailRenderer rightDriftTrail;
     [SerializeField] private CameraPresetSO camSettings;
     [SerializeField] private CameraPresetSO driftCamSettings;
     [SerializeField] private CameraPresetSO reverseCamSettings;
+    [SerializeField] private Transform leftTiltPoint;
+    [SerializeField] private Transform rightTiltPoint;
 
     [Header("Settings")]
     [SerializeField] private float acceleration = 1000;
@@ -37,6 +40,12 @@ public class ArcadeCarController : MonoBehaviour
     [SerializeField] private float driftAngle = 15;
     [SerializeField] private float timeTillDisableDriftCam = 0.15f;
 
+    [Space]
+
+    [SerializeField] private float tiltSmoothing = 10;
+    [SerializeField] private float maxTilt = 10;
+    [SerializeField] private float driftMaxTilt = 20;
+
     [Header("Debug")]
     [SerializeField] private CameraController cameraController;
 
@@ -58,6 +67,8 @@ public class ArcadeCarController : MonoBehaviour
 
     [SerializeField] private bool isDrifting;
     [SerializeField] private float timeOfNotDrifting;
+
+    [SerializeField] private float tiltAmount;
 
     [Header("Inputs")]
     [SerializeField] private bool throttleInput;
@@ -190,17 +201,40 @@ public class ArcadeCarController : MonoBehaviour
 
     private void UpdateGraphics()
     {
+        // Drift angle
         rootYRotation = (isDrifting ? driftAngle : 0) * steerInput;
         Quaternion targetRotation = Quaternion.Euler(0, rootYRotation, 0);
 
         root.localRotation = Quaternion.Slerp(root.localRotation, targetRotation, rootRotationSmoothing * Time.deltaTime);
 
-        foreach (TrailRenderer driftTrail in driftTrails) driftTrail.emitting = isDrifting;
+        // Car tilt
+        float newTiltAmount = (isDrifting ? driftMaxTilt : maxTilt) * steerInput;
+        tiltAmount = Mathf.Lerp(tiltAmount, newTiltAmount + ((2.5f * Mathf.Sin(10 * Time.time) + 1) * steerInput * (isDrifting ? 1 : 0)), tiltSmoothing * Time.deltaTime);
+
+        if (tiltAmount < 0)
+        {
+            leftTiltPoint.localRotation = Quaternion.Euler(0, 0, 0);
+            rightTiltPoint.localRotation = Quaternion.Euler(0, 0, tiltAmount);
+        }
+        else if (tiltAmount > 0)
+        {
+            leftTiltPoint.localRotation = Quaternion.Euler(0, 0, tiltAmount);
+            rightTiltPoint.localRotation = Quaternion.Euler(0, 0, 0);
+        }
+        else
+        {
+            leftTiltPoint.localRotation = Quaternion.Euler(0, 0, 0);
+            rightTiltPoint.localRotation = Quaternion.Euler(0, 0, 0);
+        }
+
+        // Drift trail
+        leftDriftTrail.emitting = isDrifting && tiltAmount > 0;
+        rightDriftTrail.emitting = isDrifting && tiltAmount < 0;
     }
 
     private void UpdateCameraSettings()
     {
-        if(reverse)
+        if (reverse)
         {
             cameraController.LoadCamPreset(reverseCamSettings);
         }
