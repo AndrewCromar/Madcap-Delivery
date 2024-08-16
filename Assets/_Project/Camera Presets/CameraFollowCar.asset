@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: CameraFollowCar
   m_EditorClassIdentifier: 
   moveSmoothing: 5
-  rotationSmoothing: 5
-  lookSmoothing: 5
+  rotationSmoothing: 1.61
+  lookSmoothing: 10
   cameraTilt: 10
-  offset: {x: 0, y: 2.5, z: -7.5}
-  lookOffset: {x: 0, y: 0, z: 0}
+  offset: {x: 0, y: 3.77, z: -5.43}
+  lookOffset: {x: 0, y: 0, z: 2.13}

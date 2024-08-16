@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: ReverseCam
   m_EditorClassIdentifier: 
   moveSmoothing: 7
-  rotationSmoothing: 7
+  rotationSmoothing: 1.66
   lookSmoothing: 7
   cameraTilt: -10
   offset: {x: 0, y: 2.5, z: 7.5}
