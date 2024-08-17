@@ -15,6 +15,8 @@ public class ArcadeCarController : MonoBehaviour
     [SerializeField] private CameraPresetSO reverseCamSettings;
     [SerializeField] private Transform leftTiltPoint;
     [SerializeField] private Transform rightTiltPoint;
+    [SerializeField] private Transform leftWheel;
+    [SerializeField] private Transform rightWheel;
 
     [Header("Settings")]
     [SerializeField] private float acceleration = 1000;
@@ -45,6 +47,11 @@ public class ArcadeCarController : MonoBehaviour
     [SerializeField] private float tiltSmoothing = 10;
     [SerializeField] private float maxTilt = 10;
     [SerializeField] private float driftMaxTilt = 20;
+
+    [Space]
+
+    [SerializeField] private float maxWheelSteer = 45;
+    [SerializeField] private float wheelTurnSmoothing = 5;
 
     [Header("Debug")]
     [SerializeField] private CameraController cameraController;
@@ -164,9 +171,9 @@ public class ArcadeCarController : MonoBehaviour
     {
         steerAngle += steerInput * actingSteerSpeed * (reverse ? -1 : 1) * (throttleInput ? 1 : 0) * Time.deltaTime;
 
-        Vector3 currentRotation = transform.rotation.eulerAngles;
+        Vector3 currentRotation = transform.localRotation.eulerAngles;
         currentRotation.y = steerAngle;
-        transform.rotation = Quaternion.Euler(currentRotation);
+        transform.localRotation = Quaternion.Euler(currentRotation);
     }
 
     private void HandleThrottle()
@@ -230,6 +237,11 @@ public class ArcadeCarController : MonoBehaviour
         // Drift trail
         leftDriftTrail.emitting = isDrifting && tiltAmount > 0;
         rightDriftTrail.emitting = isDrifting && tiltAmount < 0;
+
+        // Turn wheels
+        float wheelAngle = maxWheelSteer * steerInput;
+        leftWheel.localRotation = Quaternion.Lerp(leftWheel.localRotation, Quaternion.Euler(0, wheelAngle, 0), wheelTurnSmoothing * Time.deltaTime);
+        rightWheel.localRotation = Quaternion.Lerp(rightWheel.localRotation, Quaternion.Euler(0, wheelAngle, 0), wheelTurnSmoothing * Time.deltaTime);
     }
 
     private void UpdateCameraSettings()
