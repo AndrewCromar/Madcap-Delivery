@@ -4,6 +4,15 @@
 
 A videogame made in Unity similar to "Crazy Taxi" and "The Simpsons: Hit and Run".
 
+# How to Play
+
+1. Go to [this](https://github.com/AndrewCromar/Madcap-Delivery/releases/tag/demo-v0.0.1-beta) release.
+2. Download the attached source code zip folder.
+3. Unzip the folder.
+4. Navigate to the "Builds/Demo" folder.
+5. Run "Madcap Delivery.exe".
+6. Boom! You are now playing the very early beta demo.
+
 ## Screenshots
 
 ### Physics Vecors and Stuff
