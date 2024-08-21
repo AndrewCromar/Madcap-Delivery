@@ -263,7 +263,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 275346757}
-  - component: {fileID: 275346758}
+  - component: {fileID: 275346760}
   - component: {fileID: 275346759}
   m_Layer: 0
   m_Name: Camera Container
@@ -288,29 +288,6 @@ Transform:
   - {fileID: 963194228}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &275346758
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 275346756}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0294e796eaf8f604e9b9a665d233f229, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  target: {fileID: 879514449}
-  cam: {fileID: 963194228}
-  defaultCamSettings: {fileID: 11400000, guid: 4469357cfe625be4db6111d39ac02293, type: 2}
-  steerInput: 0
-  moveSmoothing: 0
-  rotationSmoothing: 0
-  lookSmoothing: 0
-  cameraTilt: 0
-  offset: {x: 0, y: 0, z: 0}
-  lookOffset: {x: 0, y: 0, z: 0}
-  arcadeCarController: {fileID: 0}
 --- !u!114 &275346759
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -350,8 +327,8 @@ MonoBehaviour:
     m_ActionName: Car/Break[/Keyboard/s]
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 275346758}
-        m_TargetAssemblyTypeName: CameraController, Assembly-CSharp
+      - m_Target: {fileID: 275346760}
+        m_TargetAssemblyTypeName: ArcadeCameraController, Assembly-CSharp
         m_MethodName: SteerInput
         m_Mode: 0
         m_Arguments:
@@ -373,6 +350,29 @@ MonoBehaviour:
   m_DefaultActionMap: Car
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
+--- !u!114 &275346760
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 275346756}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 75bffd96b4fe1a9418c1ae6bc6587c0e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  target: {fileID: 879514449}
+  cam: {fileID: 963194228}
+  defaultCamSettings: {fileID: 11400000, guid: 4469357cfe625be4db6111d39ac02293, type: 2}
+  steerInput: 0
+  moveSmoothing: 0
+  rotationSmoothing: 0
+  lookSmoothing: 0
+  cameraTilt: 0
+  offset: {x: 0, y: 0, z: 0}
+  lookOffset: {x: 0, y: 0, z: 0}
+  arcadeCarController: {fileID: 0}
 --- !u!1 &586194050
 GameObject:
   m_ObjectHideFlags: 0
@@ -456,12 +456,12 @@ GameObject:
   - component: {fileID: 686777055}
   - component: {fileID: 686777054}
   m_Layer: 7
-  m_Name: Sphere
+  m_Name: Graphic (for DEBUGING)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &686777053
 Transform:
   m_ObjectHideFlags: 0
@@ -800,9 +800,9 @@ MonoBehaviour:
   tiltSmoothing: 5
   maxTilt: 0
   driftMaxTilt: 20
-  maxWheelSteer: 45
+  maxWheelSteer: 22.5
   wheelTurnSmoothing: 5
-  cameraController: {fileID: 0}
+  arcadeCameraController: {fileID: 0}
   reverse: 0
   isGrounded: 0
   steerAngle: 0
@@ -1286,6 +1286,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: delivery_truck
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: b83e795b7a5da4241b7e99d9f8f3170f, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1457,7 +1461,7 @@ Transform:
   m_GameObject: {fileID: 1771398436}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 1.35}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:

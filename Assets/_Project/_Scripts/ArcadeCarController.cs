@@ -54,7 +54,7 @@ public class ArcadeCarController : MonoBehaviour
     [SerializeField] private float wheelTurnSmoothing = 5;
 
     [Header("Debug")]
-    [SerializeField] private CameraController cameraController;
+    [SerializeField] private ArcadeCameraController arcadeCameraController;
 
     [SerializeField] private bool reverse;
 
@@ -92,7 +92,7 @@ public class ArcadeCarController : MonoBehaviour
     private void Start()
     {
         rb.transform.parent = null;
-        cameraController = CameraController.Instance;
+        arcadeCameraController = ArcadeCameraController.Instance;
     }
 
     private void Update()
@@ -248,15 +248,15 @@ public class ArcadeCarController : MonoBehaviour
     {
         if (reverse)
         {
-            cameraController.LoadCamPreset(reverseCamSettings);
+            arcadeCameraController.LoadCamPreset(reverseCamSettings);
         }
         else if (isDrifting || timeOfNotDrifting <= timeTillDisableDriftCam)
         {
-            cameraController.LoadCamPreset(driftCamSettings);
+            arcadeCameraController.LoadCamPreset(driftCamSettings);
         }
         else
         {
-            cameraController.LoadCamPreset(camSettings);
+            arcadeCameraController.LoadCamPreset(camSettings);
         }
     }
 
