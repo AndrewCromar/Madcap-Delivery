@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using ONYX;
+using UnityEditor.Callbacks;
 
 public class CarController : MonoBehaviour
 {
@@ -19,8 +20,8 @@ public class CarController : MonoBehaviour
 
     [Header("Throttle Setting")]
     [SerializeField] private float RollDamping = 10;
-    [SerializeField] private float MaxSpeed = 200;
-    [SerializeField] private AnimationCurve ThrottlePower;
+    [SerializeField] private float MaxSpeed = 25;
+    [SerializeField] private AnimationCurve ThrottlePowerCurve;
 
     [Header("Wheel References")]
     [SerializeField] private WheelData[] AllWheelData;
@@ -125,11 +126,17 @@ public class CarController : MonoBehaviour
             Vector3 rollDirection = wheel.forward;
             float rollVelocityDot = Vector3.Dot(wheelWorldVelocity, wheel.forward);
 
+            // Adjust roll force by ThrottlePowerCurve
+            float percentOfMaxSpeed = CarRigidbody.velocity.magnitude / MaxSpeed;
+            Debug.Log("velocity: " + CarRigidbody.velocity.magnitude);
+            Debug.Log("percentOfMaxSpeed: " + percentOfMaxSpeed);
+            float throttleAdjusted = ThrottlePowerCurve.Evaluate(percentOfMaxSpeed);
+            Debug.Log("throttleAdjusted: " + throttleAdjusted);
 
             float rollForce = 0;
             if (RawThrottleInput != 0)
             {
-                rollForce = wheelData.Acceleration * RawThrottleInput;
+                rollForce = wheelData.Acceleration * throttleAdjusted;
             }
             else
             {

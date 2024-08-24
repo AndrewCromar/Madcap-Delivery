@@ -2488,14 +2488,14 @@ MonoBehaviour:
   CarLayer:
     serializedVersion: 2
     m_Bits: 256
-  Suspension_RestDistance: 0.8
+  Suspension_RestDistance: 0.7
   Suspension_Strength: 500
   Suspension_Damping: 50
   Steer_MaxAngle: 30
   Steer_Smoothing: 20
   RollDamping: 10
-  MaxSpeed: 200
-  ThrottlePower:
+  MaxSpeed: 25
+  ThrottlePowerCurve:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
