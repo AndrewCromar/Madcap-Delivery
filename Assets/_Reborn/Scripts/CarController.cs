@@ -8,7 +8,15 @@ public class CarController : MonoBehaviour
     [SerializeField] private Rigidbody CarRigidbody;
     [SerializeField] private LayerMask CarLayer;
 
-    [Header("References")]
+    [Header("Tow Settings")]
+    [SerializeField] private Transform AttachedVehicle;
+    [SerializeField] private bool IsTrailer = false;
+    [SerializeField, ReadOnly] private Transform AttachedTowHitch;
+    [SerializeField, ReadOnly] private Transform TowHook;
+    [SerializeField] private float TowForce = 100;
+    [SerializeField] private float TowDamping = 10;
+
+    [Header("Upright Assist")]
     [SerializeField] private float UprightAssistStrength = 10;
     [SerializeField] private AnimationCurve UprightAssistForceCurve;
 
@@ -60,8 +68,24 @@ public class CarController : MonoBehaviour
         [ReadOnly] public float GroundDistance;
     }
 
+    private void Awake()
+    {
+        TowHook = transform.Find("Tow Hook");
+
+        if (IsTrailer)
+        {
+            AttachedTowHitch = AttachedVehicle.Find("Tow Hitch");
+        }
+    }
+
+
     private void Update()
     {
+        if (IsTrailer)
+        {
+            GoTowardHitch();
+        }
+
         foreach (WheelData wheelData in AllWheelData)
         {
             // Set wheel grip.
@@ -89,6 +113,26 @@ public class CarController : MonoBehaviour
         LastResetInput = RawResetInput;
     }
 
+    private void GoTowardHitch()
+    {
+        if (AttachedTowHitch == null) return;
+
+        Vector3 directionToHitch = AttachedTowHitch.position - TowHook.position;
+        float distanceToHitch = directionToHitch.magnitude;
+
+        Vector3 normalizedDirection = directionToHitch.normalized;
+
+        Vector3 relativeVelocity = CarRigidbody.velocity - AttachedVehicle.GetComponent<Rigidbody>().velocity;
+        float dampingForce = Vector3.Dot(relativeVelocity, normalizedDirection) * TowDamping;
+
+        float forceMagnitude = TowForce * distanceToHitch - dampingForce;
+
+        CarRigidbody.AddForceAtPosition(normalizedDirection * forceMagnitude, TowHook.position);
+
+        Debug.DrawLine(TowHook.position, AttachedTowHitch.position, Color.cyan);
+    }
+
+
     private void SetWheelActiveGrip(WheelData wheelData)
     {
         wheelData.ActiveGrip = RawDriftInput ? wheelData.DriftGrip : wheelData.NormalGrip;
@@ -101,24 +145,18 @@ public class CarController : MonoBehaviour
         Vector3 currentUp = uprightAssistPivot.up;
         Vector3 desiredUp = Vector3.up;
 
-        // Calculate the axis and angle needed to align currentUp with desiredUp
         Vector3 rotationAxis = Vector3.Cross(currentUp, desiredUp);
         float angleDifference = Vector3.Angle(currentUp, desiredUp);
 
-        // Calculate the max possible distance from the target (when fully inverted)
         float maxDistance = uprightAssistPivot.localPosition.y * 2;
 
-        // Calculate the current displacement from the upright position
         float currentDistance = Vector3.Distance(currentUp, desiredUp);
-        float normalizedDistance = currentDistance / maxDistance; // A value between 0 and 1
+        float normalizedDistance = currentDistance / maxDistance;
 
-        // Look up the force multiplier from the curve
         float forceMultiplier = UprightAssistForceCurve.Evaluate(normalizedDistance);
 
-        // Calculate the torque to apply, scaled by the evaluated curve value
         Vector3 torque = rotationAxis.normalized * angleDifference * UprightAssistStrength * forceMultiplier;
 
-        // Apply the torque
         CarRigidbody.AddTorque(torque * Time.deltaTime);
     }
 
@@ -168,7 +206,7 @@ public class CarController : MonoBehaviour
             float rollForce = 0;
             if (RawThrottleInput != 0)
             {
-                rollForce = wheelData.Acceleration * throttleAdjusted;
+                rollForce = wheelData.Acceleration * (RawThrottleInput * throttleAdjusted);
             }
             else
             {
