@@ -1,13 +1,16 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using ONYX;
-using UnityEditor.Callbacks;
 
 public class CarController : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private Rigidbody CarRigidbody;
     [SerializeField] private LayerMask CarLayer;
+
+    [Header("References")]
+    [SerializeField] private float UprightAssistStrength = 10;
+    [SerializeField] private AnimationCurve UprightAssistForceCurve;
 
     [Header("Suspension Setting")]
     [SerializeField] private float Suspension_RestDistance = 0.6f;
@@ -64,19 +67,23 @@ public class CarController : MonoBehaviour
             // Set wheel grip.
             SetWheelActiveGrip(wheelData);
 
-            // Wheel Ground Data
+            // Wheel ground data.
             CheckWheelGround(wheelData);
 
-            // Suspension
+            // Suspension.
             SuspensionForWheel(wheelData);
 
-            // Steering
+            // Steering.
             SteeringForWheel(wheelData);
 
-            // Wheel Graphics
+            // Wheel graphics.
             UpdateWheelGraphics(wheelData);
         }
 
+        // Assist uprightness.
+        AssistUprightness();
+
+        // Restset rotation in player requests.
         CheckForReset();
 
         LastResetInput = RawResetInput;
@@ -85,6 +92,34 @@ public class CarController : MonoBehaviour
     private void SetWheelActiveGrip(WheelData wheelData)
     {
         wheelData.ActiveGrip = RawDriftInput ? wheelData.DriftGrip : wheelData.NormalGrip;
+    }
+
+    private void AssistUprightness()
+    {
+        Transform uprightAssistPivot = transform.Find("Upright Assist Pivot");
+
+        Vector3 currentUp = uprightAssistPivot.up;
+        Vector3 desiredUp = Vector3.up;
+
+        // Calculate the axis and angle needed to align currentUp with desiredUp
+        Vector3 rotationAxis = Vector3.Cross(currentUp, desiredUp);
+        float angleDifference = Vector3.Angle(currentUp, desiredUp);
+
+        // Calculate the max possible distance from the target (when fully inverted)
+        float maxDistance = uprightAssistPivot.localPosition.y * 2;
+
+        // Calculate the current displacement from the upright position
+        float currentDistance = Vector3.Distance(currentUp, desiredUp);
+        float normalizedDistance = currentDistance / maxDistance; // A value between 0 and 1
+
+        // Look up the force multiplier from the curve
+        float forceMultiplier = UprightAssistForceCurve.Evaluate(normalizedDistance);
+
+        // Calculate the torque to apply, scaled by the evaluated curve value
+        Vector3 torque = rotationAxis.normalized * angleDifference * UprightAssistStrength * forceMultiplier;
+
+        // Apply the torque
+        CarRigidbody.AddTorque(torque * Time.deltaTime);
     }
 
     private void CheckWheelGround(WheelData wheelData)
@@ -128,10 +163,7 @@ public class CarController : MonoBehaviour
 
             // Adjust roll force by ThrottlePowerCurve
             float percentOfMaxSpeed = CarRigidbody.velocity.magnitude / MaxSpeed;
-            Debug.Log("velocity: " + CarRigidbody.velocity.magnitude);
-            Debug.Log("percentOfMaxSpeed: " + percentOfMaxSpeed);
             float throttleAdjusted = ThrottlePowerCurve.Evaluate(percentOfMaxSpeed);
-            Debug.Log("throttleAdjusted: " + throttleAdjusted);
 
             float rollForce = 0;
             if (RawThrottleInput != 0)
