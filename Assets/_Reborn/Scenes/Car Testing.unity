@@ -2488,57 +2488,100 @@ MonoBehaviour:
   CarLayer:
     serializedVersion: 2
     m_Bits: 256
-  Suspension_RestDistance: 0.6
+  Suspension_RestDistance: 0.8
   Suspension_Strength: 500
   Suspension_Damping: 50
   Steer_MaxAngle: 30
   Steer_Smoothing: 20
   RollDamping: 10
+  MaxSpeed: 200
+  ThrottlePower:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0.5
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.25
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 136
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.75
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 136
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: -4
+      outSlope: -4
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   AllWheelData:
   - Wheel: {fileID: 166808620}
-    Acceleration: 50
+    Acceleration: 100
     Mass: 100
     ActiveGrip: 0
     NormalGrip: 0.2
     DriftGrip: 0.05
     GraphicRotationMultiplier: 150
-    IsDriveWheel: 0
+    IsDriveWheel: 1
     IsSteerWheel: 1
     ReverseSteering: 0
     IsWheelGrounded: 0
     GroundDistance: 0
   - Wheel: {fileID: 579772658}
-    Acceleration: 50
+    Acceleration: 100
+    Mass: 100
+    ActiveGrip: 0
+    NormalGrip: 0.2
+    DriftGrip: 0.05
+    GraphicRotationMultiplier: 150
+    IsDriveWheel: 1
+    IsSteerWheel: 1
+    ReverseSteering: 0
+    IsWheelGrounded: 0
+    GroundDistance: 0
+  - Wheel: {fileID: 1182820582}
+    Acceleration: 100
     Mass: 100
     ActiveGrip: 0
     NormalGrip: 0.2
     DriftGrip: 0.05
     GraphicRotationMultiplier: 150
     IsDriveWheel: 0
-    IsSteerWheel: 1
-    ReverseSteering: 0
-    IsWheelGrounded: 0
-    GroundDistance: 0
-  - Wheel: {fileID: 1182820582}
-    Acceleration: 50
-    Mass: 100
-    ActiveGrip: 0
-    NormalGrip: 0.2
-    DriftGrip: 0.05
-    GraphicRotationMultiplier: 150
-    IsDriveWheel: 1
     IsSteerWheel: 0
     ReverseSteering: 0
     IsWheelGrounded: 0
     GroundDistance: 0
   - Wheel: {fileID: 1954192375}
-    Acceleration: 50
+    Acceleration: 100
     Mass: 100
     ActiveGrip: 0
     NormalGrip: 0.2
     DriftGrip: 0.05
     GraphicRotationMultiplier: 150
-    IsDriveWheel: 1
+    IsDriveWheel: 0
     IsSteerWheel: 0
     ReverseSteering: 0
     IsWheelGrounded: 0
@@ -2546,6 +2589,8 @@ MonoBehaviour:
   RawThrottleInput: 0
   RawSteerInput: 0
   RawDriftInput: 0
+  RawResetInput: 0
+  LastResetInput: 0
 --- !u!114 &2001438473
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2619,6 +2664,22 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: fd78975d-7da8-4b49-bba5-45688e2a881a
     m_ActionName: Car/Drift[/Keyboard/space]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2001438472}
+        m_TargetAssemblyTypeName: CarController, Assembly-CSharp
+        m_MethodName: ResetInput
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 4363e362-0b4e-4a0e-8fe8-cab1991a8a5e
+    m_ActionName: Car/Reset[/Keyboard/r]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Car

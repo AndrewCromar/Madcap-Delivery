@@ -19,6 +19,8 @@ public class CarController : MonoBehaviour
 
     [Header("Throttle Setting")]
     [SerializeField] private float RollDamping = 10;
+    [SerializeField] private float MaxSpeed = 200;
+    [SerializeField] private AnimationCurve ThrottlePower;
 
     [Header("Wheel References")]
     [SerializeField] private WheelData[] AllWheelData;
@@ -27,6 +29,8 @@ public class CarController : MonoBehaviour
     [SerializeField, ReadOnly] private float RawThrottleInput;
     [SerializeField, ReadOnly] private float RawSteerInput;
     [SerializeField, ReadOnly] private bool RawDriftInput;
+    [SerializeField, ReadOnly] private bool RawResetInput;
+    [SerializeField, ReadOnly] private bool LastResetInput;
 
     [System.Serializable]
     public class WheelData
@@ -71,6 +75,10 @@ public class CarController : MonoBehaviour
             // Wheel Graphics
             UpdateWheelGraphics(wheelData);
         }
+
+        CheckForReset();
+
+        LastResetInput = RawResetInput;
     }
 
     private void SetWheelActiveGrip(WheelData wheelData)
@@ -170,12 +178,15 @@ public class CarController : MonoBehaviour
         }
 
         // Roll
-        if(wheelData.IsDriveWheel && RawDriftInput) { // Drifting.
+        if (wheelData.IsDriveWheel && RawDriftInput)
+        { // Drifting.
             Transform roll = root.Find("Roll");
             float driftRollSpeed = 10;
 
             roll.localRotation = roll.localRotation * Quaternion.Euler(driftRollSpeed * wheelData.GraphicRotationMultiplier * Time.deltaTime, 0, 0);
-        } else {
+        }
+        else
+        {
             Transform roll = root.Find("Roll");
             Vector3 wheelVelocity = CarRigidbody.GetPointVelocity(wheelData.Wheel.position);
             float rollVelocityDot = Vector3.Dot(wheelVelocity, wheelData.Wheel.forward);
@@ -184,7 +195,17 @@ public class CarController : MonoBehaviour
         }
     }
 
+    private void CheckForReset()
+    {
+        if (RawResetInput && !LastResetInput)
+        {
+            transform.rotation = Quaternion.Euler(0, transform.rotation.eulerAngles.y, 0);
+            transform.position = transform.position + new Vector3(0, 3, 0);
+        }
+    }
+
     public void ThrottleInput(InputAction.CallbackContext ctx) { RawThrottleInput = ctx.ReadValue<float>(); }
     public void SteerInput(InputAction.CallbackContext ctx) { RawSteerInput = ctx.ReadValue<float>(); }
     public void DriftInput(InputAction.CallbackContext ctx) { RawDriftInput = ctx.performed; }
+    public void ResetInput(InputAction.CallbackContext ctx) { RawResetInput = ctx.performed; }
 }
