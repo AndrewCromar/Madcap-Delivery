@@ -2456,7 +2456,7 @@ Rigidbody:
   m_Mass: 100
   m_Drag: 0
   m_AngularDrag: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_CenterOfMass: {x: 0, y: -0.25, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
   m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
   m_IncludeLayers:
@@ -2465,7 +2465,7 @@ Rigidbody:
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
-  m_ImplicitCom: 1
+  m_ImplicitCom: 0
   m_ImplicitTensor: 1
   m_UseGravity: 1
   m_IsKinematic: 0
@@ -2498,9 +2498,11 @@ MonoBehaviour:
   - Wheel: {fileID: 166808620}
     Acceleration: 50
     Mass: 100
-    Grip: 0.2
+    ActiveGrip: 0
+    NormalGrip: 0.2
+    DriftGrip: 0.05
     GraphicRotationMultiplier: 150
-    IsDriveWheel: 1
+    IsDriveWheel: 0
     IsSteerWheel: 1
     ReverseSteering: 0
     IsWheelGrounded: 0
@@ -2508,9 +2510,11 @@ MonoBehaviour:
   - Wheel: {fileID: 579772658}
     Acceleration: 50
     Mass: 100
-    Grip: 0.2
+    ActiveGrip: 0
+    NormalGrip: 0.2
+    DriftGrip: 0.05
     GraphicRotationMultiplier: 150
-    IsDriveWheel: 1
+    IsDriveWheel: 0
     IsSteerWheel: 1
     ReverseSteering: 0
     IsWheelGrounded: 0
@@ -2518,9 +2522,11 @@ MonoBehaviour:
   - Wheel: {fileID: 1182820582}
     Acceleration: 50
     Mass: 100
-    Grip: 0.2
+    ActiveGrip: 0
+    NormalGrip: 0.2
+    DriftGrip: 0.05
     GraphicRotationMultiplier: 150
-    IsDriveWheel: 0
+    IsDriveWheel: 1
     IsSteerWheel: 0
     ReverseSteering: 0
     IsWheelGrounded: 0
@@ -2528,15 +2534,18 @@ MonoBehaviour:
   - Wheel: {fileID: 1954192375}
     Acceleration: 50
     Mass: 100
-    Grip: 0.2
+    ActiveGrip: 0
+    NormalGrip: 0.2
+    DriftGrip: 0.05
     GraphicRotationMultiplier: 150
-    IsDriveWheel: 0
+    IsDriveWheel: 1
     IsSteerWheel: 0
     ReverseSteering: 0
     IsWheelGrounded: 0
     GroundDistance: 0
   RawThrottleInput: 0
   RawSteerInput: 0
+  RawDriftInput: 0
 --- !u!114 &2001438473
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2594,6 +2603,22 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 5e8fa4f7-de1b-41a1-b35c-6fbad4d2318d
     m_ActionName: Car/Steer[/Keyboard/d,/Keyboard/a]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2001438472}
+        m_TargetAssemblyTypeName: CarController, Assembly-CSharp
+        m_MethodName: DriftInput
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: fd78975d-7da8-4b49-bba5-45688e2a881a
+    m_ActionName: Car/Drift[/Keyboard/space]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Car

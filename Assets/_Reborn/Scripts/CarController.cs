@@ -26,6 +26,7 @@ public class CarController : MonoBehaviour
     [Header("Input Debug")]
     [SerializeField, ReadOnly] private float RawThrottleInput;
     [SerializeField, ReadOnly] private float RawSteerInput;
+    [SerializeField, ReadOnly] private bool RawDriftInput;
 
     [System.Serializable]
     public class WheelData
@@ -36,7 +37,9 @@ public class CarController : MonoBehaviour
         [Header("Setting")]
         public float Acceleration = 50;
         public float Mass = 100;
-        [Range(0, 1)] public float Grip = 0.1f;
+        [ReadOnly] public float ActiveGrip;
+        [Range(0, 1)] public float NormalGrip = 0.2f;
+        [Range(0, 1)] public float DriftGrip = 0.05f;
         [Space]
         public float GraphicRotationMultiplier = 150;
         [Space]
@@ -53,6 +56,9 @@ public class CarController : MonoBehaviour
     {
         foreach (WheelData wheelData in AllWheelData)
         {
+            // Set wheel grip.
+            SetWheelActiveGrip(wheelData);
+
             // Wheel Ground Data
             CheckWheelGround(wheelData);
 
@@ -65,6 +71,11 @@ public class CarController : MonoBehaviour
             // Wheel Graphics
             UpdateWheelGraphics(wheelData);
         }
+    }
+
+    private void SetWheelActiveGrip(WheelData wheelData)
+    {
+        wheelData.ActiveGrip = RawDriftInput ? wheelData.DriftGrip : wheelData.NormalGrip;
     }
 
     private void CheckWheelGround(WheelData wheelData)
@@ -126,7 +137,7 @@ public class CarController : MonoBehaviour
         Vector3 steerDirection = wheel.right;
         float slideVelocityDot = Vector3.Dot(wheelWorldVelocity, wheel.right);
 
-        float changeInVelocity = -slideVelocityDot * wheelData.Grip;
+        float changeInVelocity = -slideVelocityDot * wheelData.ActiveGrip;
         float steerForce = wheelData.Mass * changeInVelocity;
 
         CarRigidbody.AddForceAtPosition(steerDirection * steerForce, wheel.position);
@@ -159,13 +170,21 @@ public class CarController : MonoBehaviour
         }
 
         // Roll
-        Transform roll = root.Find("Roll");
-        Vector3 wheelVelocity = CarRigidbody.GetPointVelocity(wheelData.Wheel.position);
-        float rollVelocityDot = Vector3.Dot(wheelVelocity, wheelData.Wheel.forward);
+        if(wheelData.IsDriveWheel && RawDriftInput) { // Drifting.
+            Transform roll = root.Find("Roll");
+            float driftRollSpeed = 10;
 
-        roll.localRotation = roll.localRotation * Quaternion.Euler(rollVelocityDot * wheelData.GraphicRotationMultiplier * Time.deltaTime, 0, 0);
+            roll.localRotation = roll.localRotation * Quaternion.Euler(driftRollSpeed * wheelData.GraphicRotationMultiplier * Time.deltaTime, 0, 0);
+        } else {
+            Transform roll = root.Find("Roll");
+            Vector3 wheelVelocity = CarRigidbody.GetPointVelocity(wheelData.Wheel.position);
+            float rollVelocityDot = Vector3.Dot(wheelVelocity, wheelData.Wheel.forward);
+
+            roll.localRotation = roll.localRotation * Quaternion.Euler(rollVelocityDot * wheelData.GraphicRotationMultiplier * Time.deltaTime, 0, 0);
+        }
     }
 
     public void ThrottleInput(InputAction.CallbackContext ctx) { RawThrottleInput = ctx.ReadValue<float>(); }
     public void SteerInput(InputAction.CallbackContext ctx) { RawSteerInput = ctx.ReadValue<float>(); }
+    public void DriftInput(InputAction.CallbackContext ctx) { RawDriftInput = ctx.performed; }
 }
