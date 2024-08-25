@@ -3,13 +3,23 @@ using UnityEngine.InputSystem;
 using ONYX;
 using UnityEngine.UI;
 
+//  TODO:
+//  - Update upright assist.
+//      - Check a sphere around, maybe a trigger collider,
+//        only do upright assist if there is something in
+//        that sphere. This way it does not effect in the
+//        air and we do not get the weird ossolating.
+//  - Camera controller.
+//      - Use the world y postion offset as this should not
+//        let the camera go under the world.
+
 public class CarController : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private Rigidbody CarRigidbody;
-    [SerializeField] private LayerMask CarLayer;
     [SerializeField] private Text SpeedText;
     [SerializeField] private Slider BoostSlider;
+    [SerializeField] private RectTransform SpedometerNeedle;
 
     [Header("Booster References")]
     [SerializeField] private float MaxSpeedWitBoost = 50;
@@ -33,6 +43,7 @@ public class CarController : MonoBehaviour
     [SerializeField] private AnimationCurve UprightAssistForceCurve;
 
     [Header("Suspension Setting")]
+    [SerializeField] private LayerMask CarLayer;
     [SerializeField] private float Suspension_RestDistance = 0.6f;
     [SerializeField] private float Suspension_Strength = 500;
     [SerializeField] private float Suspension_Damping = 50;
@@ -156,9 +167,14 @@ public class CarController : MonoBehaviour
 
     private void UpdateGUI()
     {
-        SpeedText.text = CarRigidbody.velocity.magnitude.ToString();
+        SpeedText.text = (Mathf.Round(CarRigidbody.velocity.magnitude * 100) / 100).ToString();
+
         BoostSlider.interactable = !WaitingForBoostRegen;
         BoostSlider.value = BoostAmount;
+
+        float percentOfMaxBoostSpeed = CarRigidbody.velocity.magnitude / MaxSpeedWitBoost;
+        float angle = ((180 * percentOfMaxBoostSpeed) - 90) * -1;
+        SpedometerNeedle.rotation = Quaternion.Euler(0, 0, angle);
     }
 
     #region Boosters
