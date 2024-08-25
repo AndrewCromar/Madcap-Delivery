@@ -13,6 +13,16 @@ public class CarController : MonoBehaviour
     [SerializeField] private AnimationCurve BoostPowerCurve;
     [SerializeField] private BoosterData[] AllBoosterData;
 
+    [SerializeField, ReadOnly] private float BoostAmount = 100;
+    [SerializeField] private float BoostUsageSpeed = 1;
+    [SerializeField] private float BoostRegenSpeed = 2;
+    [SerializeField, ReadOnly] private bool ActivlyBoosting;
+
+    [SerializeField] private float BoostRegenDelay;
+    [SerializeField] private bool WaitForBoostRegen;
+    [SerializeField, ReadOnly] private float BoostRegenCounter;
+    [SerializeField, ReadOnly] private bool WaitingForBoostRegen;
+
     [Header("Upright Assist")]
     [SerializeField] private float UprightAssistStrength = 10;
     [SerializeField] private AnimationCurve UprightAssistForceCurve;
@@ -91,9 +101,39 @@ public class CarController : MonoBehaviour
 
         foreach (BoosterData boosterData in AllBoosterData)
         {
-            if(!boosterData.IsBoosterActive) return;
+            if (!boosterData.IsBoosterActive) return;
 
-            Boost(boosterData);
+            ActivlyBoosting = RawBoostInput && (BoostAmount > 0) && !WaitingForBoostRegen;
+
+            if (ActivlyBoosting)
+            {
+                Boost(boosterData);
+
+                BoostAmount -= BoostUsageSpeed * Time.deltaTime;
+
+                BoostRegenCounter = BoostRegenDelay;
+            }
+
+            if (WaitForBoostRegen)
+            {
+                if (BoostAmount <= 0)
+                {
+                    WaitingForBoostRegen = true;
+                }
+                else if (BoostAmount >= 100)
+                {
+                    WaitingForBoostRegen = false;
+                }
+            }
+
+            BoostRegenCounter -= Time.deltaTime;
+            if (BoostRegenCounter <= 0)
+            {
+                BoostAmount += BoostRegenSpeed * Time.deltaTime;
+            }
+
+            BoostAmount = Mathf.Clamp(BoostAmount, 0, 100);
+
             UpdateBoosterGraphics(boosterData);
         }
 
@@ -120,7 +160,7 @@ public class CarController : MonoBehaviour
     private void UpdateBoosterGraphics(BoosterData boosterData)
     {
         GameObject boosterEffects = boosterData.Booster.Find("Effects").gameObject;
-        boosterEffects.SetActive(RawBoostInput);
+        boosterEffects.SetActive(ActivlyBoosting);
     }
     #endregion
 

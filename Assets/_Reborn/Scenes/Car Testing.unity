@@ -7582,6 +7582,14 @@ MonoBehaviour:
   - IsBoosterActive: 1
     Booster: {fileID: 648120930}
     BoostForce: 500
+  BoostAmount: 100
+  BoostUsageSpeed: 20
+  BoostRegenSpeed: 40
+  ActivlyBoosting: 0
+  BoostRegenDelay: 2
+  WaitForBoostRegen: 1
+  BoostRegenCounter: 0
+  WaitingForBoostRegen: 0
   UprightAssistStrength: 500
   UprightAssistForceCurve:
     serializedVersion: 2
