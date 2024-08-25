@@ -8,6 +8,11 @@ public class CarController : MonoBehaviour
     [SerializeField] private Rigidbody CarRigidbody;
     [SerializeField] private LayerMask CarLayer;
 
+    [Header("Booster References")]
+    [SerializeField] private float MaxSpeedWitBoost = 50;
+    [SerializeField] private AnimationCurve BoostPowerCurve;
+    [SerializeField] private BoosterData[] AllBoosterData;
+
     [Header("Upright Assist")]
     [SerializeField] private float UprightAssistStrength = 10;
     [SerializeField] private AnimationCurve UprightAssistForceCurve;
@@ -33,6 +38,7 @@ public class CarController : MonoBehaviour
     [SerializeField, ReadOnly] private float RawThrottleInput;
     [SerializeField, ReadOnly] private float RawSteerInput;
     [SerializeField, ReadOnly] private bool RawDriftInput;
+    [SerializeField, ReadOnly] private bool RawBoostInput;
     [SerializeField, ReadOnly] private bool RawResetInput;
     [SerializeField, ReadOnly] private bool LastResetInput;
 
@@ -60,35 +66,65 @@ public class CarController : MonoBehaviour
         [ReadOnly] public float GroundDistance;
     }
 
+    [System.Serializable]
+    public class BoosterData
+    {
+        public bool IsBoosterActive = true;
+
+        [Header("References")]
+        public Transform Booster;
+
+        [Header("Settings")]
+        public float BoostForce;
+    }
+
     private void Update()
     {
         foreach (WheelData wheelData in AllWheelData)
         {
-            // Set wheel grip.
             SetWheelActiveGrip(wheelData);
-
-            // Wheel ground data.
             CheckWheelGround(wheelData);
-
-            // Suspension.
             SuspensionForWheel(wheelData);
-
-            // Steering.
             SteeringForWheel(wheelData);
-
-            // Wheel graphics.
             UpdateWheelGraphics(wheelData);
         }
 
-        // Assist uprightness.
+        foreach (BoosterData boosterData in AllBoosterData)
+        {
+            if(!boosterData.IsBoosterActive) return;
+
+            Boost(boosterData);
+            UpdateBoosterGraphics(boosterData);
+        }
+
         AssistUprightness();
 
-        // Restset rotation in player requests.
         CheckForReset();
-
         LastResetInput = RawResetInput;
+
+        Debug.Log("Car Speed: " + CarRigidbody.velocity.magnitude);
     }
 
+    #region Boosters
+    private void Boost(BoosterData boosterData)
+    {
+        float percentOfMaxBoostSpeed = CarRigidbody.velocity.magnitude / MaxSpeedWitBoost;
+        float boostAdjusted = BoostPowerCurve.Evaluate(percentOfMaxBoostSpeed);
+
+        Vector3 boostDirection = boosterData.Booster.forward;
+        Vector3 boostVector = boostDirection * boosterData.BoostForce * boostAdjusted * (RawBoostInput ? 1 : 0);
+
+        CarRigidbody.AddForceAtPosition(boostVector, boosterData.Booster.position);
+    }
+
+    private void UpdateBoosterGraphics(BoosterData boosterData)
+    {
+        GameObject boosterEffects = boosterData.Booster.Find("Effects").gameObject;
+        boosterEffects.SetActive(RawBoostInput);
+    }
+    #endregion
+
+    #region Wheels
     private void SetWheelActiveGrip(WheelData wheelData)
     {
         wheelData.ActiveGrip = RawDriftInput ? wheelData.DriftGrip : wheelData.NormalGrip;
@@ -227,6 +263,7 @@ public class CarController : MonoBehaviour
             roll.localRotation = roll.localRotation * Quaternion.Euler(rollVelocityDot * wheelData.GraphicRotationMultiplier * Time.deltaTime, 0, 0);
         }
     }
+    #endregion
 
     private void CheckForReset()
     {
@@ -237,8 +274,14 @@ public class CarController : MonoBehaviour
         }
     }
 
+    #region Inputs
     public void ThrottleInput(InputAction.CallbackContext ctx) { RawThrottleInput = ctx.ReadValue<float>(); }
+
     public void SteerInput(InputAction.CallbackContext ctx) { RawSteerInput = ctx.ReadValue<float>(); }
+
     public void DriftInput(InputAction.CallbackContext ctx) { RawDriftInput = ctx.performed; }
     public void ResetInput(InputAction.CallbackContext ctx) { RawResetInput = ctx.performed; }
+
+    public void BoostInput(InputAction.CallbackContext ctx) { RawBoostInput = ctx.performed; }
+    #endregion
 }
