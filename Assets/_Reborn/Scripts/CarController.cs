@@ -1,23 +1,28 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using ONYX;
+using UnityEngine.UI;
 
 public class CarController : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] private Rigidbody CarRigidbody;
     [SerializeField] private LayerMask CarLayer;
+    [SerializeField] private Text SpeedText;
+    [SerializeField] private Slider BoostSlider;
 
     [Header("Booster References")]
     [SerializeField] private float MaxSpeedWitBoost = 50;
     [SerializeField] private AnimationCurve BoostPowerCurve;
     [SerializeField] private BoosterData[] AllBoosterData;
 
+    [Space]
     [SerializeField, ReadOnly] private float BoostAmount = 100;
     [SerializeField] private float BoostUsageSpeed = 1;
     [SerializeField] private float BoostRegenSpeed = 2;
     [SerializeField, ReadOnly] private bool ActivlyBoosting;
 
+    [Space]
     [SerializeField] private float BoostRegenDelay;
     [SerializeField] private bool WaitForBoostRegen;
     [SerializeField, ReadOnly] private float BoostRegenCounter;
@@ -88,6 +93,10 @@ public class CarController : MonoBehaviour
         public float BoostForce;
     }
 
+    private void Awake()
+    {
+    }
+
     private void Update()
     {
         foreach (WheelData wheelData in AllWheelData)
@@ -142,7 +151,14 @@ public class CarController : MonoBehaviour
         CheckForReset();
         LastResetInput = RawResetInput;
 
-        Debug.Log("Car Speed: " + CarRigidbody.velocity.magnitude);
+        UpdateGUI();
+    }
+
+    private void UpdateGUI()
+    {
+        SpeedText.text = CarRigidbody.velocity.magnitude.ToString();
+        BoostSlider.interactable = !WaitingForBoostRegen;
+        BoostSlider.value = BoostAmount;
     }
 
     #region Boosters
