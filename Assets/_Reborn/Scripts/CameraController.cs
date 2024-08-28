@@ -19,6 +19,7 @@ public class CameraController : MonoBehaviour
         transform.rotation = Quaternion.Lerp(transform.rotation, TargetReference.rotation, SmoothingMove * Time.deltaTime);
 
         Vector3 desiredPosition = TargetReference.TransformPoint(offset);
+        desiredPosition.y = TargetReference.position.y + offset.y;
 
         CameraReference.position = Vector3.Lerp(CameraReference.position, desiredPosition, SmoothingMove * Time.deltaTime);
 
