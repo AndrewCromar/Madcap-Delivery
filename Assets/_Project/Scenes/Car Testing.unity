@@ -8573,7 +8573,7 @@ MonoBehaviour:
   Suspension_RestDistance: 0.7
   Suspension_Strength: 500
   Suspension_Damping: 50
-  Steer_MaxAngle: 20
+  Steer_MaxAngle: 15
   Steer_Smoothing: 20
   RollDamping: 10
   MaxSpeed: 20
@@ -8649,7 +8649,7 @@ MonoBehaviour:
     Mass: 100
     ActiveGrip: 0
     NormalGrip: 0.45
-    DriftGrip: 0.05
+    DriftGrip: 0.1
     GraphicRotationMultiplier: 150
     IsDriveWheel: 0
     IsSteerWheel: 0
@@ -8661,7 +8661,7 @@ MonoBehaviour:
     Mass: 100
     ActiveGrip: 0
     NormalGrip: 0.45
-    DriftGrip: 0.05
+    DriftGrip: 0.1
     GraphicRotationMultiplier: 150
     IsDriveWheel: 0
     IsSteerWheel: 0
