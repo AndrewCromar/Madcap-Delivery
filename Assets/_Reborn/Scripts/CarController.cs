@@ -41,6 +41,8 @@ public class CarController : MonoBehaviour
     [Header("Upright Assist")]
     [SerializeField] private float UprightAssistStrength = 10;
     [SerializeField] private AnimationCurve UprightAssistForceCurve;
+    [SerializeField] private float UprightAssistDistance = 2;
+
 
     [Header("Suspension Setting")]
     [SerializeField] private LayerMask CarLayer;
@@ -102,10 +104,6 @@ public class CarController : MonoBehaviour
 
         [Header("Settings")]
         public float BoostForce;
-    }
-
-    private void Awake()
-    {
     }
 
     private void Update()
@@ -202,27 +200,6 @@ public class CarController : MonoBehaviour
         wheelData.ActiveGrip = RawDriftInput ? wheelData.DriftGrip : wheelData.NormalGrip;
     }
 
-    private void AssistUprightness()
-    {
-        Transform uprightAssistPivot = transform.Find("Upright Assist Pivot");
-
-        Vector3 currentUp = uprightAssistPivot.up;
-        Vector3 desiredUp = Vector3.up;
-
-        Vector3 rotationAxis = Vector3.Cross(currentUp, desiredUp);
-        float angleDifference = Vector3.Angle(currentUp, desiredUp);
-
-        float maxDistance = uprightAssistPivot.localPosition.y * 2;
-
-        float currentDistance = Vector3.Distance(currentUp, desiredUp);
-        float normalizedDistance = currentDistance / maxDistance;
-
-        float forceMultiplier = UprightAssistForceCurve.Evaluate(normalizedDistance);
-
-        Vector3 torque = rotationAxis.normalized * angleDifference * UprightAssistStrength * forceMultiplier;
-
-        CarRigidbody.AddTorque(torque * Time.deltaTime);
-    }
 
     private void CheckWheelGround(WheelData wheelData)
     {
@@ -344,6 +321,31 @@ public class CarController : MonoBehaviour
             transform.rotation = Quaternion.Euler(0, transform.rotation.eulerAngles.y, 0);
             transform.position = transform.position + new Vector3(0, 3, 0);
         }
+    }
+
+    private void AssistUprightness()
+    {
+        if (!Physics.Raycast(transform.position, Vector3.down, UprightAssistDistance, ~CarLayer))
+            return;
+
+        Transform uprightAssistPivot = transform.Find("Upright Assist Pivot");
+
+        Vector3 currentUp = uprightAssistPivot.up;
+        Vector3 desiredUp = Vector3.up;
+
+        Vector3 rotationAxis = Vector3.Cross(currentUp, desiredUp);
+        float angleDifference = Vector3.Angle(currentUp, desiredUp);
+
+        float maxDistance = uprightAssistPivot.localPosition.y * 2;
+
+        float currentDistance = Vector3.Distance(currentUp, desiredUp);
+        float normalizedDistance = currentDistance / maxDistance;
+
+        float forceMultiplier = UprightAssistForceCurve.Evaluate(normalizedDistance);
+
+        Vector3 torque = rotationAxis.normalized * angleDifference * UprightAssistStrength * forceMultiplier;
+
+        CarRigidbody.AddTorque(torque * Time.deltaTime);
     }
 
     #region Inputs
