@@ -5730,14 +5730,14 @@ MonoBehaviour:
   AllBoosterData:
   - IsBoosterActive: 1
     Booster: {fileID: 8683422234808354009}
-    BoostForce: 500
+    BoostForce: 1500
   BoostAmount: 100
   BoostUsageSpeed: 20
   BoostRegenSpeed: 40
   ActivlyBoosting: 0
   BoostRegenDelay: 1
   WaitForBoostRegen: 1
-  BoostRegenCounter: 0
+  BoostRegenCounter: -0.95999926
   WaitingForBoostRegen: 0
   UprightAssistStrength: 750
   UprightAssistForceCurve:
@@ -5786,10 +5786,10 @@ MonoBehaviour:
   CarLayer:
     serializedVersion: 2
     m_Bits: 256
-  Suspension_RestDistance: 0.7
-  Suspension_Strength: 500
-  Suspension_Damping: 50
-  Steer_MaxAngle: 25
+  Suspension_RestDistance: 0.6
+  Suspension_Strength: 2000
+  Suspension_Damping: 200
+  Steer_MaxAngle: 15
   Steer_Smoothing: 20
   RollDamping: 10
   MaxSpeed: 20
@@ -5837,53 +5837,53 @@ MonoBehaviour:
     m_RotationOrder: 4
   AllWheelData:
   - Wheel: {fileID: 4524681511484325863}
-    Acceleration: 100
+    Acceleration: 750
     Mass: 100
-    ActiveGrip: 0
-    NormalGrip: 0.5
-    DriftGrip: 0.1
+    ActiveGrip: 1
+    NormalGrip: 1
+    DriftGrip: 0.4
     GraphicRotationMultiplier: 150
     IsDriveWheel: 1
     IsSteerWheel: 1
     ReverseSteering: 0
-    IsWheelGrounded: 0
-    GroundDistance: 0
+    IsWheelGrounded: 1
+    GroundDistance: 0.4833745
   - Wheel: {fileID: 8672471486163423882}
-    Acceleration: 100
+    Acceleration: 750
     Mass: 100
-    ActiveGrip: 0
-    NormalGrip: 0.45
-    DriftGrip: 0.1
+    ActiveGrip: 1
+    NormalGrip: 1
+    DriftGrip: 0.4
     GraphicRotationMultiplier: 150
     IsDriveWheel: 1
     IsSteerWheel: 1
     ReverseSteering: 0
-    IsWheelGrounded: 0
-    GroundDistance: 0
+    IsWheelGrounded: 1
+    GroundDistance: 0.48368335
   - Wheel: {fileID: 2696765557497137015}
-    Acceleration: 100
+    Acceleration: 750
     Mass: 100
-    ActiveGrip: 0
-    NormalGrip: 0.45
-    DriftGrip: 0.1
+    ActiveGrip: 1
+    NormalGrip: 1
+    DriftGrip: 0.3
     GraphicRotationMultiplier: 150
     IsDriveWheel: 0
     IsSteerWheel: 0
     ReverseSteering: 0
-    IsWheelGrounded: 0
-    GroundDistance: 0
+    IsWheelGrounded: 1
+    GroundDistance: 0.47012064
   - Wheel: {fileID: 5237460565148530677}
-    Acceleration: 100
+    Acceleration: 750
     Mass: 100
-    ActiveGrip: 0
-    NormalGrip: 0.45
-    DriftGrip: 0.1
+    ActiveGrip: 1
+    NormalGrip: 1
+    DriftGrip: 0.3
     GraphicRotationMultiplier: 150
     IsDriveWheel: 0
     IsSteerWheel: 0
     ReverseSteering: 0
-    IsWheelGrounded: 0
-    GroundDistance: 0
+    IsWheelGrounded: 1
+    GroundDistance: 0.47042957
   RawThrottleInput: 0
   RawSteerInput: 0
   RawDriftInput: 0
@@ -6025,7 +6025,7 @@ Transform:
   m_GameObject: {fileID: 4918191987822313372}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.3, z: -1.75}
+  m_LocalPosition: {x: 0, y: -0.4, z: -1.75}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
