@@ -106,7 +106,7 @@ public class CarController : MonoBehaviour
         public float BoostForce;
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         foreach (WheelData wheelData in AllWheelData)
         {
