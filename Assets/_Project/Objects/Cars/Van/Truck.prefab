@@ -5777,7 +5777,7 @@ MonoBehaviour:
   EngineRunningMaxPitch: 2
   EngineRunningMinPitch: 1
   AirControllYawStrength: 5000
-  AirControllPitchStrength: 5000
+  AirControllPitchStrength: 0
   CarInAir: 0
   UprightAssistStrength: 750
   UprightAssistForceCurve:
@@ -6160,7 +6160,7 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 500
+  MaxDistance: 5
   Pan2D: 0
   rolloffMode: 0
   BypassEffects: 0
