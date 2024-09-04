@@ -34,6 +34,11 @@ public class CarController : MonoBehaviour
     [SerializeField, ReadOnly] private float BoostRegenCounter;
     [SerializeField, ReadOnly] private bool WaitingForBoostRegen;
 
+    [Header("Engine Sounds")]
+    [SerializeField] private AudioSource EngineRunningSound;
+    [SerializeField] private float EngineRunningMaxPitch = 2;
+    [SerializeField] private float EngineRunningMinPitch = 1;
+
     [Header("Air Controll")]
     [SerializeField] private float AirControllYawStrength = 5000f;
     [SerializeField] private float AirControllPitchStrength = 5000f;
@@ -159,6 +164,7 @@ public class CarController : MonoBehaviour
             BoostAmount = Mathf.Clamp(BoostAmount, 0, 100);
 
             UpdateBoosterGraphics(boosterData);
+            UpdateSoundEffects();
         }
 
         AssistUprightness();
@@ -179,6 +185,11 @@ public class CarController : MonoBehaviour
         float percentOfMaxBoostSpeed = CarRigidbody.velocity.magnitude / MaxSpeedWitBoost;
         float angle = ((180 * percentOfMaxBoostSpeed) - 90) * -1;
         SpedometerNeedle.rotation = Quaternion.Euler(0, 0, angle);
+    }
+
+    private void UpdateSoundEffects()
+    {
+        EngineRunningSound.pitch = Remap(Mathf.Abs(CarRigidbody.velocity.magnitude), 0, MaxSpeedWitBoost, EngineRunningMinPitch, EngineRunningMaxPitch);
     }
 
     private void AirControll()
@@ -360,6 +371,12 @@ public class CarController : MonoBehaviour
 
         CarRigidbody.AddTorque(torque * Time.deltaTime);
     }
+
+    private float Remap(float value, float from1, float to1, float from2, float to2)
+    {
+        return (value - from1) / (to1 - from1) * (to2 - from2) + from2;
+    }
+
 
     #region Inputs
     public void ThrottleInput(InputAction.CallbackContext ctx) { RawThrottleInput = ctx.ReadValue<float>(); }
