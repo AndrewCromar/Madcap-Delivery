@@ -5739,6 +5739,8 @@ MonoBehaviour:
   WaitForBoostRegen: 1
   BoostRegenCounter: -0.95999926
   WaitingForBoostRegen: 0
+  AirControllYawStrength: 5000
+  CarInAir: 0
   UprightAssistStrength: 750
   UprightAssistForceCurve:
     serializedVersion: 2
@@ -5886,6 +5888,8 @@ MonoBehaviour:
     GroundDistance: 0.47042957
   RawThrottleInput: 0
   RawSteerInput: 0
+  RawACYawInput: 0
+  RawACPitchInput: 0
   RawDriftInput: 0
   RawBoostInput: 0
   RawResetInput: 0
@@ -5995,6 +5999,38 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: c0385810-2f3a-40ba-97bd-c3646ec551dd
     m_ActionName: Car/Boost[/Keyboard/leftShift]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2416659278685186025}
+        m_TargetAssemblyTypeName: CarController, Assembly-CSharp
+        m_MethodName: ACYawInput
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: 10853106-59f3-42ec-ba3a-931b2657a802
+    m_ActionName: Car/Air Controll Yaw[/Keyboard/d,/Keyboard/a,/Keyboard/rightArrow,/Keyboard/leftArrow]
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 2416659278685186025}
+        m_TargetAssemblyTypeName: CarController, Assembly-CSharp
+        m_MethodName: ACPitchInput
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: b14eca09-f1e8-4446-94da-5c630784f7f2
+    m_ActionName: Car/Air Controll Pitch[/Keyboard/w,/Keyboard/s,/Keyboard/upArrow,/Keyboard/downArrow]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Car

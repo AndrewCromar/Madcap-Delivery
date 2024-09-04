@@ -4,11 +4,7 @@ using ONYX;
 using UnityEngine.UI;
 
 //  TODO:
-//  - Update upright assist.
-//      - Check a sphere around, maybe a trigger collider,
-//        only do upright assist if there is something in
-//        that sphere. This way it does not effect in the
-//        air and we do not get the weird ossolating.
+//  - Air controll.
 //  - Camera controller.
 //      - Use the world y postion offset as this should not
 //        let the camera go under the world.
@@ -38,11 +34,15 @@ public class CarController : MonoBehaviour
     [SerializeField, ReadOnly] private float BoostRegenCounter;
     [SerializeField, ReadOnly] private bool WaitingForBoostRegen;
 
+    [Header("Air Controll")]
+    [SerializeField] private float AirControllYawStrength = 5000f;
+    [SerializeField] private float AirControllPitchStrength = 5000f;
+    [SerializeField, ReadOnly] private bool CarInAir;
+
     [Header("Upright Assist")]
     [SerializeField] private float UprightAssistStrength = 10;
     [SerializeField] private AnimationCurve UprightAssistForceCurve;
     [SerializeField] private float UprightAssistDistance = 2;
-
 
     [Header("Suspension Setting")]
     [SerializeField] private LayerMask CarLayer;
@@ -65,6 +65,8 @@ public class CarController : MonoBehaviour
     [Header("Input Debug")]
     [SerializeField, ReadOnly] private float RawThrottleInput;
     [SerializeField, ReadOnly] private float RawSteerInput;
+    [SerializeField, ReadOnly] private float RawACYawInput;
+    [SerializeField, ReadOnly] private float RawACPitchInput;
     [SerializeField, ReadOnly] private bool RawDriftInput;
     [SerializeField, ReadOnly] private bool RawBoostInput;
     [SerializeField, ReadOnly] private bool RawResetInput;
@@ -108,14 +110,18 @@ public class CarController : MonoBehaviour
 
     private void FixedUpdate()
     {
+        CarInAir = true;
         foreach (WheelData wheelData in AllWheelData)
         {
+            if (wheelData.IsWheelGrounded) CarInAir = false;
             SetWheelActiveGrip(wheelData);
             CheckWheelGround(wheelData);
             SuspensionForWheel(wheelData);
             SteeringForWheel(wheelData);
             UpdateWheelGraphics(wheelData);
         }
+
+        if (CarInAir) AirControll();
 
         foreach (BoosterData boosterData in AllBoosterData)
         {
@@ -173,6 +179,13 @@ public class CarController : MonoBehaviour
         float percentOfMaxBoostSpeed = CarRigidbody.velocity.magnitude / MaxSpeedWitBoost;
         float angle = ((180 * percentOfMaxBoostSpeed) - 90) * -1;
         SpedometerNeedle.rotation = Quaternion.Euler(0, 0, angle);
+    }
+
+    private void AirControll()
+    {
+        float yawForce = RawACYawInput * AirControllYawStrength * Time.deltaTime;
+        float pitchForce = RawACPitchInput * AirControllPitchStrength * Time.deltaTime;
+        CarRigidbody.AddTorque(transform.up * yawForce + transform.right * pitchForce);
     }
 
     #region Boosters
@@ -352,6 +365,9 @@ public class CarController : MonoBehaviour
     public void ThrottleInput(InputAction.CallbackContext ctx) { RawThrottleInput = ctx.ReadValue<float>(); }
 
     public void SteerInput(InputAction.CallbackContext ctx) { RawSteerInput = ctx.ReadValue<float>(); }
+
+    public void ACYawInput(InputAction.CallbackContext ctx) { RawACYawInput = ctx.ReadValue<float>(); }
+    public void ACPitchInput(InputAction.CallbackContext ctx) { RawACPitchInput = ctx.ReadValue<float>(); }
 
     public void DriftInput(InputAction.CallbackContext ctx) { RawDriftInput = ctx.performed; }
     public void ResetInput(InputAction.CallbackContext ctx) { RawResetInput = ctx.performed; }
