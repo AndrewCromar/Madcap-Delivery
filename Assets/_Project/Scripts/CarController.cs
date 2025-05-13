@@ -189,7 +189,7 @@ public class CarController : MonoBehaviour
 
     private void UpdateSoundEffects()
     {
-        EngineRunningSound.pitch = Remap(Mathf.Abs(CarRigidbody.velocity.magnitude), 0, MaxSpeedWitBoost, EngineRunningMinPitch, EngineRunningMaxPitch);
+        // EngineRunningSound.pitch = Remap(Mathf.Abs(CarRigidbody.velocity.magnitude), 0, MaxSpeedWitBoost, EngineRunningMinPitch, EngineRunningMaxPitch);
     }
 
     private void AirControll()
