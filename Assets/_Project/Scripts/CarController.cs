@@ -65,6 +65,7 @@ public class CarController : MonoBehaviour
     [SerializeField] private AnimationCurve ThrottlePowerCurve;
 
     [Header("Wheel References")]
+    [SerializeField] private float Wheel_Position_Smoothing = 10;
     [SerializeField] private WheelData[] AllWheelData;
 
     [Header("Input Debug")]
@@ -302,11 +303,12 @@ public class CarController : MonoBehaviour
         Transform root = wheelData.Wheel.Find("Root");
         if (Physics.Raycast(wheelData.Wheel.position, wheelData.Wheel.TransformDirection(Vector3.down), out RaycastHit hit, Suspension_RestDistance, ~CarLayer.value))
         {
-            root.transform.position = hit.point;
+            root.transform.position = Vector3.Lerp(root.transform.position, hit.point, Wheel_Position_Smoothing * Time.deltaTime);
         }
         else
         {
-            root.transform.localPosition = new Vector3(0, -Suspension_RestDistance, 0);
+            // root.transform.localPosition = new Vector3(0, -Suspension_RestDistance, 0);
+            root.transform.localPosition = Vector3.Lerp(root.transform.localPosition, new Vector3(0, -Suspension_RestDistance, 0), Wheel_Position_Smoothing * Time.deltaTime);
         }
 
         // Steer
