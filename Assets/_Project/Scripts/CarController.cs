@@ -392,5 +392,13 @@ public class CarController : MonoBehaviour
     public void ResetInput(InputAction.CallbackContext ctx) { RawResetInput = ctx.performed; }
 
     public void BoostInput(InputAction.CallbackContext ctx) { RawBoostInput = ctx.performed; }
+
+    public void SendAIInputs(float throttle, float steer)
+    {
+        RawThrottleInput = throttle;
+        RawSteerInput = steer;
+        RawDriftInput = false;
+        RawBoostInput = false;
+    }
     #endregion
 }
